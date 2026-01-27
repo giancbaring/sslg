@@ -1,3 +1,50 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+  --primary-blue: #0A3A79; /* A deep, professional blue */
+  --secondary-blue: #1E5BAA;
+  --accent-blue: #3B82F6;
+  --light-gray: #F3F4F6;
+  --medium-gray: #E5E7EB;
+  --dark-gray: #4B5563;
+  --text-primary: #1F2937;
+  --text-secondary: #6B7280;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--light-gray);
+  color: var(--text-primary);
+}
+
+.bg-blue-900 {
+  background-color: var(--primary-blue);
+}
+.bg-blue-800 {
+  background-color: var(--secondary-blue);
+}
+.bg-blue-700 {
+  background-color: var(--accent-blue);
+}
+.text-blue-200 {
+  color: #BFD7FF;
+}
+
+/* Custom scrollbar for a more polished look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--medium-gray);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--dark-gray);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5a6a7c;
+}
