@@ -1,9 +1,12 @@
+
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,12 +24,10 @@ const LoginForm = () => {
 
             if (response.ok) {
                 if (data.needsEmailBinding) {
-                    // Redirect to the email binding page
-                    window.location.href = '/bind-email';
+                    navigate('/bind-email');
                 } else {
                     Swal.fire('Success', 'You have been logged in!', 'success');
-                    // Redirect to the dashboard
-                    window.location.href = '/dashboard';
+                    navigate('/');
                 }
             } else {
                 Swal.fire('Error', data.error, 'error');
