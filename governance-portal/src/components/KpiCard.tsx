@@ -1,26 +1,21 @@
-
-import type { ReactElement } from 'react';
 import React from 'react';
 
 interface KpiCardProps {
   title: string;
-  value: string | number;
-  icon: ReactElement;
-  color: string;
+  value: string;
+  icon: React.ReactNode;
 }
 
-export const KpiCard: React.FC<KpiCardProps> = ({ title, value, icon, color }) => {
+const KpiCard: React.FC<KpiCardProps> = ({ title, value, icon }) => {
   return (
-    <div className={`p-4 rounded-lg shadow-md text-white ${color}`}>
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium">{title}</p>
-          <p className="text-3xl font-bold">{value}</p>
-        </div>
-        <div className="p-3 bg-white bg-opacity-20 rounded-full">
-          {icon}
-        </div>
+    <div className="bg-white p-6 rounded-lg shadow-md flex items-center">
+      <div className="mr-4">{icon}</div>
+      <div>
+        <h3 className="text-gray-500 text-sm font-medium">{title}</h3>
+        <p className="text-2xl font-bold">{value}</p>
       </div>
     </div>
   );
 };
+
+export default KpiCard;
