@@ -1,8 +1,5 @@
 import { sign } from '@tsndr/cloudflare-worker-jwt';
 
-// IMPORTANT: In a real application, use a secure secret stored as an environment variable.
-const JWT_SECRET = 'your-super-secret-key-that-is-at-least-32-characters-long';
-
 async function pbkdf2(password, salt) {
     const enc = new TextEncoder();
     const keyMaterial = await crypto.subtle.importKey(
@@ -54,7 +51,7 @@ export async function onRequestPost({ request, env }) {
             return new Response(JSON.stringify({ needsEmailBinding: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
         }
 
-        const token = await sign({ id: user.id, role: user.role, is_verified: user.is_verified }, JWT_SECRET, { expiresIn: '24h' });
+        const token = await sign({ id: user.id, role: user.role, is_verified: user.is_verified }, env.JWT_SECRET, { expiresIn: '24h' });
 
         return new Response(JSON.stringify({ success: true }), {
             status: 200,

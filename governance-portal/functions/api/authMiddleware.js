@@ -1,7 +1,5 @@
 import { verify } from '@tsndr/cloudflare-worker-jwt';
 
-const JWT_SECRET = 'your-super-secret-key-that-is-at-least-32-characters-long';
-
 function getCookie(request, name) {
     let result = null;
     const cookieString = request.headers.get('Cookie');
@@ -20,13 +18,13 @@ function getCookie(request, name) {
 }
 
 // Base authentication function to verify JWT
-async function baseAuth(request) {
+async function baseAuth(request, env) {
     const token = getCookie(request, 'auth_token');
     if (!token) {
         return { error: new Response('Unauthorized: No token provided', { status: 401 }) };
     }
     try {
-        const { payload } = await verify(token, JWT_SECRET);
+        const { payload } = await verify(token, env.JWT_SECRET);
         if (!payload) {
             return { error: new Response('Invalid token payload', { status: 401 }) };
         }
@@ -39,14 +37,14 @@ async function baseAuth(request) {
 
 // Standard middleware to check if a user is logged in
 export async function authMiddleware(request, env, next) {
-    const { error } = await baseAuth(request);
+    const { error } = await baseAuth(request, env);
     if (error) return error;
     return await next(request, env);
 }
 
 // Admin-only middleware to check for 'admin' role
 export async function adminAuthMiddleware(request, env, next) {
-    const { payload, error } = await baseAuth(request);
+    const { payload, error } = await baseAuth(request, env);
     if (error) return error;
 
     if (payload.role !== 'admin') {

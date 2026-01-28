@@ -24,13 +24,15 @@ const LoginForm = () => {
 
             if (response.ok) {
                 if (data.needsEmailBinding) {
-                    navigate('/bind-email');
+                    // Pass the username to the bind-email page via state
+                    navigate('/bind-email', { state: { username } });
                 } else {
-                    Swal.fire('Success', 'You have been logged in!', 'success');
-                    navigate('/');
+                    // Store user session and redirect to dashboard
+                    localStorage.setItem('user', JSON.stringify({ username: data.username, role: data.role }));
+                    navigate('/dashboard');
                 }
             } else {
-                Swal.fire('Error', data.error, 'error');
+                Swal.fire('Error', data.error || 'Login failed', 'error');
             }
         } catch (error) {
             Swal.fire('Error', 'An unexpected error occurred.', 'error');

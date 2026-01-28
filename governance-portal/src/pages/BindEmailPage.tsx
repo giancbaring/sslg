@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const BindEmailPage = () => {
     const [email, setEmail] = useState('');
+    const navigate = useNavigate();
+    const location = useLocation();
+    
+    // Retrieve the username passed from the login page
+    const username = location.state?.username;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!username) {
+            Swal.fire('Error', 'Session error: Username not found.', 'error');
+            navigate('/login');
+            return;
+        }
 
         try {
             const response = await fetch('/api/bind-email', {
@@ -13,17 +25,18 @@ const BindEmailPage = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ email, username }),
             });
 
+            const data = await response.json();
+
             if (response.ok) {
-                Swal.fire('Success', 'Your email has been bound successfully!', 'success').then(() => {
-                    // Redirect to the dashboard
-                    window.location.href = '/dashboard';
+                Swal.fire('Success', 'Your email has been bound successfully! Please log in again.', 'success').then(() => {
+                    // Redirect to the login page to re-authenticate
+                    navigate('/login');
                 });
             } else {
-                const data = await response.json();
-                Swal.fire('Error', data.error, 'error');
+                Swal.fire('Error', data.error || 'Failed to bind email.', 'error');
             }
         } catch (error) {
             Swal.fire('Error', 'An unexpected error occurred.', 'error');
@@ -34,7 +47,7 @@ const BindEmailPage = () => {
         <div className="flex items-center justify-center h-screen bg-gray-100">
             <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold text-center">Bind Your Email</h2>
-                <p className="text-center text-gray-600">Please enter your email to continue.</p>
+                <p className="text-center text-gray-600">Welcome, <strong>{username}</strong>! Please enter your email to secure your account.</p>
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="email" className="text-sm font-medium text-gray-700">Email</label>
@@ -53,7 +66,7 @@ const BindEmailPage = () => {
                             type="submit"
                             className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Bind Email
+                            Bind Email and Proceed to Login
                         </button>
                     </div>
                 </form>

@@ -3,31 +3,21 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import ProfilePage from './pages/ProfilePage';
+import BindEmailPage from './pages/BindEmailPage';
 import PrivateRoute from './components/PrivateRoute';
 
 const App: React.FC = () => {
-  const mockUser = {
-    role: 'admin',
-    username: 'testuser',
-  };
-
-  const mockStats = {
-    activeProjects: 5,
-    pendingApprovals: 2,
-    totalFunds: 100000,
-    nextEvent: '2024-08-01',
-  };
-
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/bind-email" element={<BindEmailPage />} />
         <Route element={<PrivateRoute />}>
-          <Route
-            path="/dashboard/*"
-            element={<DashboardPage user={mockUser} stats={mockStats} />}
-          />
+          <Route path="/dashboard/*" element={<DashboardPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
+        <Route path="/" element={<LoginPage />} />
       </Routes>
     </Router>
   );
