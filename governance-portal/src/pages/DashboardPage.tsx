@@ -1,42 +1,25 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { DashboardHeader } from '../components/DashboardHeader';
 import { KpiCard } from '../components/KpiCard';
 import { RecentResolutions } from '../components/RecentResolutions';
 import { QuickActions } from '../components/QuickActions';
 import { DollarSign, Briefcase, FileText, Calendar } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
-const DashboardPage: React.FC = () => {
-  const [user, setUser] = useState<{ role: string; username: string } | null>(null);
-  const [stats, setStats] = useState<{ activeProjects: number; pendingApprovals: number; totalFunds: number; nextEvent: string } | null>(null);
-  const navigate = useNavigate();
+interface DashboardPageProps {
+  user: {
+    role: string;
+    username: string;
+  };
+  stats: {
+    activeProjects: number;
+    pendingApprovals: number;
+    totalFunds: number;
+    nextEvent: string;
+  };
+}
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else {
-      navigate('/login');
-    }
-
-    const fetchStats = async () => {
-      try {
-        const response = await fetch('/api/dashboard-stats');
-        const data = await response.json();
-        setStats(data);
-      } catch (error) {
-        console.error('Failed to fetch dashboard stats', error);
-      }
-    };
-
-    fetchStats();
-  }, [navigate]);
-
-  if (!user || !stats) {
-    return <div>Loading...</div>;
-  }
-
+const DashboardPage: React.FC<DashboardPageProps> = ({ user, stats }) => {
   return (
     <>
       <DashboardHeader user={user} />
